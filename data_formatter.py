@@ -1,5 +1,6 @@
 import json
 import re
+import argparse
 
 
 def extract_link(text,
@@ -85,3 +86,19 @@ def convert_to_d3_format(scrapbox_data,
         'links': links,
         'page_infos': page_infos
     }
+
+
+
+parser = argparse.ArgumentParser(description='This script is ...')
+parser.add_argument('-i', '--scrapbox_exported_json_file')
+parser.add_argument('-o', '--output_js_file')
+args = parser.parse_args()
+
+with open(args.scrapbox_exported_json_file) as f:
+    scrapbox_data = json.load(f)
+
+with open(args.output_js_file, 'w') as f:
+    scrapdata_as_d3_format = convert_to_d3_format(scrapbox_data,
+                                                  ignore_external_link=True)
+    js_content = 'var graph = ' + json.dumps(scrapdata_as_d3_format, f, indent=4)
+    f.write(js_content)
